@@ -69,8 +69,12 @@ export default function VirtualAssistant() {
     setInput('');
     setIsTyping(true);
 
+    // Give React a moment to render the user's message before any synchronous errors
+    await new Promise(resolve => setTimeout(resolve, 50));
+
     try {
-      if (!ai.apiKey && !process.env.GEMINI_API_KEY) {
+      const currentKey = process.env.GEMINI_API_KEY || (ai as any).apiKey;
+      if (!currentKey || currentKey === '') {
         throw new Error("A chave da API (GEMINI_API_KEY) não foi encontrada nas variáveis de ambiente da Vercel.");
       }
 
@@ -147,7 +151,10 @@ export default function VirtualAssistant() {
             className="absolute bottom-16 md:bottom-20 right-0 w-[calc(100vw-2rem)] md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col h-[450px] md:h-[500px]"
           >
             {/* Header */}
-            <div className="bg-[#00638a] p-4 text-white flex items-center justify-between">
+            <div className="bg-[#00638a] p-4 text-white flex items-center justify-between relative">
+              <div className="absolute top-2 right-10 text-[10px] opacity-50">
+                Key: {process.env.GEMINI_API_KEY ? 'OK' : 'Missing'}
+              </div>
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">

@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isValidChatLog(data) {
+      return data.keys().hasOnly(['sessionId', 'userMessage', 'botResponse', 'timestamp']) &&
+             data.sessionId is string && data.sessionId.size() > 0 && data.sessionId.size() < 100 &&
+             data.userMessage is string && data.userMessage.size() > 0 && data.userMessage.size() < 2000 &&
+             data.botResponse is string && data.botResponse.size() > 0 && data.botResponse.size() < 4000 &&
+             data.timestamp is string && data.timestamp.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
+    }
+
+    match /chat_logs/{logId} {
+      // Allow anyone to create a chat log, as long as it follows the schema
+      allow create: if isValidChatLog(request.resource.data);
+      
+      // Allow anyone to read chat logs so the bot can learn from previous questions.
+      // We restrict the query limit to prevent mass scraping.
+      allow list: if request.query.limit <= 50;
+      
+      // No updates or deletes allowed
+      allow update, delete: if false;
+      allow get: if false;
+    }
+  }
+}

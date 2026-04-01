@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+}
+
+@keyframes neon-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.neon-text {
+  background: linear-gradient(
+    90deg, 
+    #1b1b1b 0%, 
+    #1b1b1b 40%, 
+    #b60059 48%, 
+    #0098D2 50%, 
+    #b60059 52%, 
+    #1b1b1b 60%, 
+    #1b1b1b 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: neon-sweep 6s linear infinite;
+}
+
+.bg-gradient-site {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6f0f9 50%, #fceef5 100%);
+}
+
+.bg-gradient-premium {
+  background: linear-gradient(135deg, #00638a 0%, #004d6b 100%);
+}

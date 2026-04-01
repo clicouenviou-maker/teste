@@ -70,6 +70,10 @@ export default function VirtualAssistant() {
     setIsTyping(true);
 
     try {
+      if (!ai.apiKey && !process.env.GEMINI_API_KEY) {
+        throw new Error("A chave da API (GEMINI_API_KEY) não foi encontrada nas variáveis de ambiente da Vercel.");
+      }
+
       // Extract all text from the current website to use as context
       const siteContent = document.body.innerText.substring(0, 15000); // Limit to avoid token overflow
 
@@ -124,9 +128,9 @@ export default function VirtualAssistant() {
         console.error('Error saving to DB:', dbError);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chat error:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Estou com dificuldades técnicas no momento. Por favor, entre em contato pelo nosso WhatsApp ou telefone.' }]);
+      setMessages(prev => [...prev, { role: 'bot', text: `Erro técnico: ${error.message || 'Desconhecido'}. Por favor, verifique a configuração na Vercel.` }]);
     } finally {
       setIsTyping(false);
     }
